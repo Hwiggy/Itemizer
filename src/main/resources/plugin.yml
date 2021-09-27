@@ -1,0 +1,9 @@
+name: ${project.name}
+version: ${project.version}
+main: me.hwiggy.minecraft.itemizer.Itemizer
+depend: [ Kotlin, NBTAPI ]
+api-version: 1.17
+commands:
+  test:
+    usage: "/test"
+    description: "Opens the rainbow menu"
