@@ -1,8 +1,7 @@
 name: ${project.name}
 version: ${project.version}
-main: me.hwiggy.minecraft.itemizer.Itemizer
+main: Itemizer
 depend: [ Kotlin, NBTAPI ]
-api-version: 1.17
 commands:
   test:
     usage: "/test"

@@ -1,6 +1,5 @@
 package me.hwiggy.minecraft.itemizer.inventory.animation
 
-import me.hwiggy.minecraft.itemizer.inventory.InventoryManipulator
 import org.bukkit.Bukkit
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
@@ -8,6 +7,7 @@ import org.bukkit.event.inventory.InventoryCloseEvent
 import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.InventoryHolder
 import org.bukkit.plugin.Plugin
+import org.bukkit.scheduler.BukkitRunnable
 import org.bukkit.scheduler.BukkitTask
 import java.util.*
 import java.util.function.Consumer
@@ -43,21 +43,18 @@ abstract class InventoryAnimation protected constructor(): Iterator<Frame>, List
     private inner class Task(
         private val owner: Plugin,
         private val inventory: Inventory
-    ) : Consumer<BukkitTask> {
+    ) : BukkitRunnable() {
         private lateinit var lastFrame: Frame
-        private var cancel = false
-        override fun accept(task: BukkitTask) {
-            if (cancel) return task.cancel()
+        override fun run() {
             if (!this::lastFrame.isInitialized || !lastFrame.shouldRepeat()) {
-                if (!hasNext()) return task.cancel()
+                if (!hasNext()) return cancel()
                 lastFrame = next()
             }
             lastFrame.renderInto(inventory)
-            Bukkit.getScheduler().runTaskLater(owner, this, lastFrame.displayTicks)
+            runTaskLater(owner, lastFrame.displayTicks)
         }
 
-        fun start() = Bukkit.getScheduler().runTask(owner, this)
-        fun cancel() { this.cancel = true }
+        fun start() = runTask(owner)
     }
 }
 

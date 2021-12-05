@@ -1,9 +1,7 @@
 package me.hwiggy.minecraft.itemizer.item
 
-import de.tr7zw.nbtapi.NBTItem
+import de.tr7zw.changeme.nbtapi.NBTItem
 import org.bukkit.Material
-import org.bukkit.attribute.Attribute
-import org.bukkit.attribute.AttributeModifier
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.ItemStack
@@ -23,7 +21,6 @@ abstract class AbstractItemBuilder<Meta : ItemMeta, Self : AbstractItemBuilder<M
     private var lore = emptyList<String>()
     private var customModelData: Int? = null
     private var enchantments: Array<out ItemEnchantment> = emptyArray()
-    private var modifiers: Array<out ItemModifier> = emptyArray()
     private var itemFlags: Array<out ItemFlag> = emptyArray()
     private var unbreakable = false
 
@@ -32,17 +29,11 @@ abstract class AbstractItemBuilder<Meta : ItemMeta, Self : AbstractItemBuilder<M
     open fun updateMeta(meta: Meta) = Unit
     private fun transformMeta(input: Meta): Meta {
         input.setDisplayName(displayName)
-        input.setLocalizedName(localizedName)
         input.lore = lore
-        input.setCustomModelData(customModelData)
         enchantments.forEach { (type, level) ->
             input.addEnchant(type, level, true)
         }
-        modifiers.forEach { (attribute, modifier) ->
-            input.addAttributeModifier(attribute, modifier)
-        }
         input.addItemFlags(*itemFlags)
-        input.isUnbreakable = unbreakable
         updateMeta(input)
         return input
     }
@@ -52,7 +43,6 @@ abstract class AbstractItemBuilder<Meta : ItemMeta, Self : AbstractItemBuilder<M
     fun lore(vararg lore: String) = self().apply { this.lore = lore.toList() }
     fun customModelData(data: Int) = self().apply { this.customModelData = data }
     fun enchantments(vararg enchantments: ItemEnchantment) = self().apply { this.enchantments = enchantments }
-    fun modifiers(vararg modifiers: ItemModifier) = self().apply { this.modifiers = modifiers }
     fun flags(vararg flags: ItemFlag) = self().apply  { this.itemFlags = flags }
     fun unbreakable() = self().apply { this.unbreakable = true }
     fun nbt(applicator: (NBTItem) -> Unit) = self().apply { this.applicator = applicator }
@@ -72,16 +62,6 @@ abstract class AbstractItemBuilder<Meta : ItemMeta, Self : AbstractItemBuilder<M
 class ItemEnchantment(private val enchantment: Enchantment, private val level: Int) {
     operator fun component1() = enchantment
     operator fun component2() = level
-}
-
-class ItemModifier(
-    private val attribute: Attribute,
-    private val name: String,
-    private val amount: Double,
-    private val operation: AttributeModifier.Operation
-) {
-    operator fun component1() = attribute
-    operator fun component2() = AttributeModifier(name, amount, operation)
 }
 
 fun Enchantment.withLevel(level: Int) = ItemEnchantment(this, level)

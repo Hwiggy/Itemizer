@@ -1,6 +1,6 @@
 package me.hwiggy.minecraft.itemizer.menu
 
-import de.tr7zw.nbtapi.NBTItem
+import de.tr7zw.changeme.nbtapi.NBTItem
 import org.bukkit.event.inventory.InventoryClickEvent
 
 abstract class ActionableMenu : Menu {
