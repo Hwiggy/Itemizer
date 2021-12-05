@@ -5,7 +5,7 @@ plugins {
 
 allprojects {
     group = "me.hwiggy.minecraft"
-    version = "1.0-SNAPSHOT"
+    version = "1.1-SNAPSHOT"
 
     apply(plugin = "org.jetbrains.kotlin.jvm")
     apply(plugin = "com.github.johnrengelman.shadow")
